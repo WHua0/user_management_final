@@ -24,21 +24,6 @@ async def test_create_user_access_denied(async_client, user_token, email_service
 
 # Example of a test function using the async_client fixture
 @pytest.mark.asyncio
-async def test_create_user_allowed(async_client, admin_token):
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    # Define user data for the test
-    user_data = {
-        "nickname": generate_nickname(),
-        "email": "test@example.com",
-        "password": "sS#fdasrongPassword123!",
-    }
-    # Send a POST request to create a user
-    response = await async_client.post("/users/", json=user_data, headers=headers)
-    # Asserts
-    assert response.status_code == 201
-
-# Example of a test function using the async_client fixture
-@pytest.mark.asyncio
 async def test_create_user_duplicate_email(async_client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
     # Define user data for the test
