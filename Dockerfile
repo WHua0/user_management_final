@@ -28,6 +28,13 @@ RUN python -m venv /.venv \
 # Define a second stage for the runtime
 FROM python:3.12-slim-bullseye as final
 
+# Update the base image to one with patched versions of libc-bin and libc6
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libc-bin=2.31-13+deb11u9 \
+    libc6=2.31-13+deb11u9 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy the virtual environment from the base stage
 COPY --from=base /.venv /.venv
 
