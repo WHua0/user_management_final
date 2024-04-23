@@ -55,6 +55,7 @@ async def get_user(user_id: UUID, request: Request, db: AsyncSession = Depends(g
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     return UserResponse.model_construct(
+        is_professional=user.is_professional,
         id=user.id,
         nickname=user.nickname,
         first_name=user.first_name,
