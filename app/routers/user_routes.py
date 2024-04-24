@@ -91,8 +91,17 @@ async def update_user(user_id: UUID, user_update: UserUpdate, request: Request, 
     updated_user = await UserService.update(db, user_id, user_data)
     if not updated_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    existing_user_email = await UserService.get_by_email(db, user_update.email)
+    if existing_user_email and existing_user_email.id != updated_user.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
+    
+    existing_user_nickname = await UserService.get_by_nickname(db, user_update.nickname)
+    if existing_user_nickname and existing_user_nickname.id != updated_user.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nickname already exists")
 
     return UserResponse.model_construct(
+        is_professional=updated_user.is_professional,
         id=updated_user.id,
         bio=updated_user.bio,
         first_name=updated_user.first_name,
