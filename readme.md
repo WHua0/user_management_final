@@ -12,10 +12,13 @@
 
 ## [QA (Quality Assurance) Issues](https://github.com/WHua0/user_management_final/issues?q=is%3Aissue+is%3Aclosed)
 
-![Github Issues](submissions/Github%20Issues.png)
-
 ### [Issue 1: POST / register / Register - New User Email Verification](https://github.com/WHua0/user_management_final/issues/1)
 ![Github Issue 1](submissions/Github%20Issue%201.png)
+![Issue 1 Fix](submissions/Github%20Issue%201%20Fix.png)
+
+A verification email should be sent not before, but after the new user has been commited to the database.
+
+Clicking the email verification link should only update user role to Authenticated if user role is Anonymous. It should not affect user roles, such as Authenticated, Manager, and Admin.
 
 ### [Issue 2: POST / register / Register - Nonmatching Response Body](https://github.com/WHua0/user_management_final/issues/3)
 ![Github Issue 2](submissions/Github%20Issue%202.png)
