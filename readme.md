@@ -41,6 +41,11 @@ An if statement was added to generate nickname, such that a new nickname will be
 
 ### [Issue 4: GET / users / {user_Id} Get User - Nonmatching Response Body](https://github.com/WHua0/user_management_final/issues/7)
 ![Github Issue 4](submissions/Github%20Issue%204.png)
+![Issue 4 Fix](submissions/Github%20Issue%204%20Fix.png)
+
+The code was found to return the incorrect value for is_professional.
+
+The missing line of is_professional was added to UserResponse.model_construct.
 
 ### [Issue 5: PUT / users / {user_id} Update User - Nonmatching Response Body & Missing Error for Duplicate Email and Nickname](https://github.com/WHua0/user_management_final/issues/9)
 ![Github Issue 5](submissions/Github%20Issue%205.png)
