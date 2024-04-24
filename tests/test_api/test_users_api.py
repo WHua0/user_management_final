@@ -115,10 +115,10 @@ async def test_update_user_duplicate_email(async_client, db_session, user, admin
 @pytest.mark.asyncio
 async def test_update_user_duplicate_nickname(async_client, db_session, user, admin_token):
     user_data = {
-            "nickname": "user1",
+            "nickname": "user2",
             "first_name": "User",
-            "last_name": "One",
-            "email": "user1@example.com",
+            "last_name": "Two",
+            "email": "user2@example.com",
             "hashed_password": hash_password("AnotherPassword$5678"),
             "role": UserRole.AUTHENTICATED,
             "email_verified": True,
@@ -128,7 +128,7 @@ async def test_update_user_duplicate_nickname(async_client, db_session, user, ad
     db_session.add(first_user)
     user
     await db_session.commit()
-    updated_data = {"nickname": "user1"}
+    updated_data = {"nickname": "user2"}
     headers = {"Authorization": f"Bearer {admin_token}"}
     response = await async_client.put(f"/users/{user.id}", json=updated_data, headers=headers)
     assert response.status_code == 400
