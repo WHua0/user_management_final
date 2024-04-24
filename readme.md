@@ -49,6 +49,16 @@ The missing line of is_professional was added to UserResponse.model_construct.
 
 ### [Issue 5: PUT / users / {user_id} Update User - Nonmatching Response Body & Missing Error for Duplicate Email and Nickname](https://github.com/WHua0/user_management_final/issues/9)
 ![Github Issue 5](submissions/Github%20Issue%205.png)
+![Issue 5 Fix](submissions/Github%20Issue%205%20Fix.png)
+
+The code was found to return the incorrect value for is_professional.
+
+The missing line of is_professional was added to UserResponse.model_construct
+
+The code does not check if existing user with the same Email or Nickname already exists in the database.
+
+
+![Issue 5 Test](submissions/Github%20Issue%205%20Test.png)
 
 ### [Issue 6: GET / users / List User - Missing Error for Invalid Skip Integer and Limit Integer Input](https://github.com/WHua0/user_management_final/issues/10)
 ![Github Issue 6](submissions/Github%20Issue%206.png)
