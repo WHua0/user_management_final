@@ -26,13 +26,13 @@ Clicking the email verification link should only update user role to Authenticat
 
 User role input has no impact, and is automatically set to Anonymous. Thus, role was removed from UserBase. 
 
-The code does not check for existing user with the same nickname in the database, and generates a random nickname regardless of input.
+The code did not check for existing user with the same nickname in the database, and generated a random nickname regardless of input.
 
 A database check for an existing user with the same nickname was added to the database check for an existing user with the same email. Logging error was also updated to "User with given email or nickname already exists".
 
 HTTP 400 detail message was updated to "Email or Nickname already exists".
 
-An if statement was added to generate nickname, such that a new nickname will be generated and used only if no nickname is provided. 
+An if statement was added to generate nickname, such that a new nickname would be generated and used only if no nickname is provided. 
 
 ![Issue 2 Test](submissions/Github%20Issue%202%20Test.png)
 
@@ -55,11 +55,11 @@ The code was found to return the incorrect value for is_professional.
 
 The missing line of is_professional was added to UserResponse.model_construct
 
-The code does not check if existing user with the same email or nickname already exists in the database. Furthermore, the check for if the user exists is incorrect, and in the wrong position. The checks should be before the update data is committed to the database.
+The code did not check if existing user with the same email or nickname already exists in the database. Furthermore, the check for if the user exists was incorrect, and in the wrong location. The checks should be before the updated data is committed to the database.
 
-The check for if the user exists was updated to search the database for a matching user id, and raises Http 400 if not found.
+The check for if the user exists was updated to search the database for a matching user id, and raise Http 400 if not found.
 
-The checks for a existing email or nickname was also added. However, the checks would only be performed if the user's updated nickname or email does not match the user's current ones. The checks raise Http 400 if nickname or email already in use by another user.
+The checks for a existing email and nickname were also added. However, the checks would only be performed if the user's updated nickname or email does not match the user's current ones. The checks raise Http 400 if nickname or email is already in use by another user.
 
 ![Issue 5 Test](submissions/Github%20Issue%205%20Test.png)
 
@@ -77,7 +77,7 @@ Two if statements was added to list users. If Skip Integer is less than 0, Http 
 ![Github Issue 7](submissions/Github%20Issue%207.png)
 ![Issue 7 Fix](submissions/Github%20Issue%20Fix%207.png)
 
-The code does not check the inputs for many fields, such that edge cases were allowed. For instance, one could register an user with a password of an empty string.
+The code did not check the inputs for many fields, such that edge cases were allowed. For instance, one could register an user with a password of an empty string.
 
 Various validators and constraints, such as minimum length, maximum length, required characters, and invalid characters, were added to each field, enhancing security and preventing edge cases from occuring.
 
