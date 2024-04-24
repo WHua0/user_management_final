@@ -40,6 +40,20 @@ An if statement was added to generate nickname, such that a new nickname would b
 
 ### [Issue 3: POST / users / Create User - Nonmatching Response Body & Missing Error for Diplicate Nickname](https://github.com/WHua0/user_management_final/issues/5)
 ![Github Issue 3](submissions/Github%20Issue%203.png)
+![Issue 3 Fix](submissions/Github%20Issue%203%20Fix.png)
+
+The code was found to return the incorrect values for is_professional, linkedin_profile_url, and github_profile url.
+
+The missing lines for is_professional, linkedin_profile_url, and github_profile url.was added to UserResponse.model_construct.
+
+The code did not check if existing user with the same nickname already exists in the database. 
+
+A nickname check was added to raise Http 400 if nickname was used by another user.
+
+The email check was updated to reflect user with existing email, rather than just existing user, for clarity. 
+
+
+![Issue 3 Test](submissions/Github%20Issue%203%20Test.png)
 
 ### [Issue 4: GET / users / {user_Id} Get User - Nonmatching Response Body](https://github.com/WHua0/user_management_final/issues/7)
 ![Github Issue 4](submissions/Github%20Issue%204.png)
@@ -47,7 +61,7 @@ An if statement was added to generate nickname, such that a new nickname would b
 
 The code was found to return the incorrect value for is_professional.
 
-The missing line of is_professional was added to UserResponse.model_construct.
+The missing line for is_professional was added to UserResponse.model_construct.
 
 ### [Issue 5: PUT / users / {user_id} Update User - Nonmatching Response Body & Missing Error for Duplicate Email and Nickname](https://github.com/WHua0/user_management_final/issues/9)
 ![Github Issue 5](submissions/Github%20Issue%205.png)
@@ -55,7 +69,7 @@ The missing line of is_professional was added to UserResponse.model_construct.
 
 The code was found to return the incorrect value for is_professional.
 
-The missing line of is_professional was added to UserResponse.model_construct
+The missing line for is_professional was added to UserResponse.model_construct.
 
 The code did not check if existing user with the same email or nickname already exists in the database. Furthermore, the check for if the user exists was incorrect, and in the wrong location. The checks should be before the updated data is committed to the database.
 
