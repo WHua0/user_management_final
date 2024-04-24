@@ -6,9 +6,9 @@
 
 ![Dockerhub Repository](submissions/Dockerhub.png)
 
-## Github Actions
+## [Github Actions](https://github.com/WHua0/user_management_final/actions)
 
-## Github Commit History
+## [Github Commit History](https://github.com/WHua0/user_management_final/commits)
 
 ## Pytest Coverage
 
