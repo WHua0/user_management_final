@@ -62,5 +62,12 @@ Two if statements was added to list users. If Skip Integer is less than 0, Http 
 
 ### [Issue 7: Missing Validators, Max Length, Min Length, etc.](https://github.com/WHua0/user_management_final/issues/15)
 ![Github Issue 7](submissions/Github%20Issue%207.png)
+![Issue 7 Fix](submissions/Github%20Issue%20Fix%207.png)
+
+The code does not check the inputs for many fields, such that edge cases were allowed. For instance, one could register an account with a password of an empty string.
+
+Various validators and constraints, such as minimum length, maximum length, required characters, and invalid characters, were added to each field, enhancing security and preventing edge cases from occuring.
+
+![Issue 7 Test](submissions/Github%20Issue%207%20Test.png)
 
 ## New Feature Implementation
