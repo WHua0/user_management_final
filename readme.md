@@ -47,6 +47,13 @@ An if statement was added to generate nickname, such that a new nickname will be
 
 ### [Issue 6: GET / users / List User - Missing Error for Invalid Skip Integer and Limit Integer Input](https://github.com/WHua0/user_management_final/issues/10)
 ![Github Issue 6](submissions/Github%20Issue%206.png)
+![Issue 6 Fix](submissions/Github%20Issue%206%20Fix.png)
+
+The code does not check the inputs for Skip Integer and Limit Integer. The only error returned is if Limit Integer is 0.
+
+Two if statements was added to list users. If Skip Integer is less than 0, Http 400 is raised. If Limit Integer is not more than 0, Http 400 is raised.
+
+![Issue 6 Test](submissions/Github%20Issue%206%20Test.png)
 
 ### [Issue 7: Missing Validators, Max Length, Min Length, etc.](https://github.com/WHua0/user_management_final/issues/15)
 ![Github Issue 7](submissions/Github%20Issue%207.png)
