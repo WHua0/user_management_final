@@ -55,8 +55,11 @@ The code was found to return the incorrect value for is_professional.
 
 The missing line of is_professional was added to UserResponse.model_construct
 
-The code does not check if existing user with the same Email or Nickname already exists in the database.
+The code does not check if existing user with the same email or nickname already exists in the database. Furthermore, the check for if the user exists is incorrect, and in the wrong position. The checks should be before the update data is committed to the database.
 
+The check for if the user exists was updated to search the database for a matching user id, and raises Http 400 if not found.
+
+The checks for a existing email or nickname was also added. However, the checks would only be performed if the user's updated nickname or email does not match the user's current ones. The checks raise Http 400 if nickname or email already in use by another user.
 
 ![Issue 5 Test](submissions/Github%20Issue%205%20Test.png)
 
