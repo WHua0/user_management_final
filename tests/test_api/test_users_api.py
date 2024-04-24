@@ -22,43 +22,52 @@ async def test_create_user_access_denied(async_client, user_token, email_service
     # Asserts
     assert response.status_code == 403
 
-# Example of a test function using the async_client fixture
 @pytest.mark.asyncio
-async def test_create_user_duplicate_email(async_client, admin_token):
+async def test_create_user_duplicate_email_admin(async_client, db_session,admin_token):
+    user_data_1 = {
+            "nickname": "user1",
+            "first_name": "User",
+            "last_name": "One",
+            "email": "user1@example.com",
+            "hashed_password": hash_password("AnotherPassword$5678"),
+            "role": UserRole.AUTHENTICATED,
+            "email_verified": True,
+            "is_locked": False,
+        }
+    first_user = User(**user_data_1)
+    db_session.add(first_user)
+    await db_session.commit()
+    user_data_2 = {
+            "nickname": "user2",
+            "email": "user1@example.com",
+            "password": "AnotherPassword$5678",
+        }
     headers = {"Authorization": f"Bearer {admin_token}"}
-    # Define user data for the test
-    user_data = {
-        "nickname": generate_nickname(),
-        "email": "test@example.com",
-        "password": "sS#fdasrongPassword123!",
-    }
-    response = await async_client.post("/users/", json=user_data, headers=headers)
-    assert response.status_code == 201
-    # Send a POST request to create a user
-    response = await async_client.post("/users/", json=user_data, headers=headers)
-    # Asserts
+    response = await async_client.post("/users/", json=user_data_2, headers=headers)
     assert response.status_code == 400
 
-# Example of a test function using the async_client fixture
 @pytest.mark.asyncio
-async def test_create_user_duplicate_nickname(async_client, admin_token):
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    # Define user data for the test
+async def test_create_user_duplicate_nickname_admin(async_client, db_session,admin_token):
     user_data_1 = {
-        "nickname": "Duplicate_Nickname",
-        "email": "test123@example.com",
-        "password": "sS#fdasrongPassword123!",
-    }
+            "nickname": "user1",
+            "first_name": "User",
+            "last_name": "One",
+            "email": "user1@example.com",
+            "hashed_password": hash_password("AnotherPassword$5678"),
+            "role": UserRole.AUTHENTICATED,
+            "email_verified": True,
+            "is_locked": False,
+        }
+    first_user = User(**user_data_1)
+    db_session.add(first_user)
+    await db_session.commit()
     user_data_2 = {
-        "nickname": "Duplicate_Nickname",
-        "email": "testabc@example.com",
-        "password": "sS#fdasrongPassword123!",
-    }
-    response = await async_client.post("/users/", json=user_data_1, headers=headers)
-    assert response.status_code == 201
-    # Send a POST request to create a user
+            "nickname": "user1",
+            "email": "user2@example.com",
+            "password": "AnotherPassword$5678",
+        }
+    headers = {"Authorization": f"Bearer {admin_token}"}
     response = await async_client.post("/users/", json=user_data_2, headers=headers)
-    # Asserts
     assert response.status_code == 400
 
 # You can similarly refactor other test functions to use the async_client fixture
