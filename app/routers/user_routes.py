@@ -279,17 +279,14 @@ async def update_profile(user_update: UserProfileUpdate, request: Request, db: A
     """
     Update user's profile fields.
 
-    Args:
-        user_update: UserUpdate model with updated user information.
-        request: The request object, used to generate full URLs in the response.
-        db: Dependency that provides an AsyncSession for database access.
-        token: The OAuth2 access token obtained through OAuth2PasswordBearer dependency.
-        current_user: Must have the role of ADMIN, MANAGER, or AUTHENTICATED
+    - **user_update**: UserUpdate model with updated user information.
+    - **request**: The request object; used to generate full URLs in the response.
+    - **db**: Dependency that provides an AsyncSession for database access.
+    - **token**: The OAuth2 access token obtained through OAuth2PasswordBearer dependency.
+    - **current_user**: Obtained from token; must have the role of ADMIN, MANAGER, or AUTHENTICATED.
 
-    Returns:
-        UserResponse: The newly created user's information along with navigation links.
+    - **UserResponse:** The newly created user's information along with navigation links.
     """
-
     current_user_info = get_current_user(token)
     user_email = current_user_info['user_email']
     user = await UserService.get_by_email(db, user_email)
