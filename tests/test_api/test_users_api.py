@@ -2,6 +2,7 @@ from builtins import str
 import pytest
 from httpx import AsyncClient
 from datetime import timedelta
+from unittest.mock import AsyncMock, patch
 from app.main import app
 from app.models.user_model import User, UserRole
 from app.utils.nickname_gen import generate_nickname
@@ -412,14 +413,20 @@ async def test_update_user_professional_status_access_denied_with_user_token(asy
     assert response.status_code == 403
 
 @pytest.mark.asyncio
-async def test_update_user_professional_status_as_admin(async_client, db_session, admin_token, verified_user):
+async def test_update_user_professional_status_as_admin(async_client, admin_token, verified_user):
     update_data_true = {"is_professional": True}
     update_data_false = {"is_professional": False}
     headers = {"Authorization": f"Bearer {admin_token}"}
     professional_user = verified_user
-    response = await async_client.put(f"/users/{professional_user.id}/set-professional/true", headers=headers, json=update_data_true)
-    assert response.status_code == 200
-    assert response.json()["is_professional"] == professional_user.is_professional
-    response = await async_client.put(f"/users/{professional_user.id}/set-professional/false", headers=headers, json=update_data_false)
-    assert response.status_code == 200
-    assert response.json()["is_professional"] == professional_user.is_professional
+    
+    # Mock the email service
+    with patch('app.services.email_service.EmailService.send_professional_status_email') as mock_send_email:
+        mock_send_email.return_value = None  # Mock the email sending
+        
+        response = await async_client.put(f"/users/{professional_user.id}/set-professional/true", headers=headers, json=update_data_true)
+        assert response.status_code == 200
+        assert response.json()["is_professional"] == True
+
+        response = await async_client.put(f"/users/{professional_user.id}/set-professional/false", headers=headers, json=update_data_false)
+        assert response.status_code == 200
+        assert response.json()["is_professional"] == False
