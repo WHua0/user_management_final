@@ -214,17 +214,17 @@ async def manager_user(db_session: AsyncSession):
 @pytest.fixture(scope="function")
 def admin_token(admin_user):
     # Assuming admin_user has an 'id' and 'role' attribute
-    token_data = {"sub": str(admin_user.id), "role": admin_user.role.name}
+    token_data = {"sub": str(admin_user.email), "role": admin_user.role.name}
     return create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
 
 @pytest.fixture(scope="function")
 def manager_token(manager_user):
-    token_data = {"sub": str(manager_user.id), "role": manager_user.role.name}
+    token_data = {"sub": str(manager_user.email), "role": manager_user.role.name}
     return create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
 
 @pytest.fixture(scope="function")
 def user_token(user):
-    token_data = {"sub": str(user.id), "role": user.role.name}
+    token_data = {"sub": str(user.email), "role": user.role.name}
     return create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
 
 @pytest.fixture
@@ -238,3 +238,24 @@ def email_service():
         mock_service.send_verification_email.return_value = None
         mock_service.send_user_email.return_value = None
         return mock_service
+
+@pytest.fixture(scope="function")
+async def verified_user_and_token(db_session):
+    user_data = {
+        "nickname": fake.user_name(),
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "email": fake.email(),
+        "hashed_password": hash_password("MySuperPassword$1234"),
+        "role": UserRole.AUTHENTICATED,
+        "email_verified": True,
+        "is_locked": False,
+    }
+    user = User(**user_data)
+    db_session.add(user)
+    await db_session.commit()
+
+    token_data = {"sub": str(user.email), "role": user.role.name}
+    token = create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
+
+    return user, token

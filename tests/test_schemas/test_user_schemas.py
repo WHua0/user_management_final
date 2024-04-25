@@ -2,7 +2,7 @@ import uuid
 import pytest
 from pydantic import ValidationError
 from datetime import datetime
-from app.schemas.user_schemas import UserBase, UserCreate, UserUpdate, UserResponse, UserListResponse, LoginRequest
+from app.schemas.user_schemas import UserBase, UserCreate, UserUpdate, UserResponse, UserListResponse, LoginRequest, UserProfileUpdate
 
 # Fixtures for common test data
 @pytest.fixture
@@ -70,6 +70,12 @@ def test_user_update_valid(user_update_data):
     user_update = UserUpdate(**user_update_data)
     assert user_update.email == user_update_data["email"]
     assert user_update.first_name == user_update_data["first_name"]
+
+def test_user_update_invalid():
+    # Test case where all fields are None
+    with pytest.raises(ValueError) as exc_info:
+        UserUpdate()
+    assert "At least one field must be provided for update" in str(exc_info.value)
 
 # Tests for UserResponse
 def test_user_response_valid(user_response_data):
@@ -202,3 +208,15 @@ def test_UserCreate_password_no_special_character(user_create_data):
 def test_UserCreate_password_with_space(user_create_data):
     with pytest.raises(ValueError, match="Password must not contain spaces."):
         UserCreate(**{**user_create_data, "password": "Space Password123!"})
+
+# Tests for UserProfileUpdate
+def test_user_update_profile_valid(user_update_data):
+    user_update = UserProfileUpdate(**user_update_data)
+    assert user_update.email == user_update_data["email"]
+    assert user_update.first_name == user_update_data["first_name"]
+
+def test_user_update_profile_invalid():
+    # Test case where all fields are None
+    with pytest.raises(ValueError) as exc_info:
+        UserProfileUpdate()
+    assert "At least one field must be provided for update" in str(exc_info.value)

@@ -1,11 +1,12 @@
 from builtins import str
 import pytest
 from httpx import AsyncClient
+from datetime import timedelta
 from app.main import app
 from app.models.user_model import User, UserRole
 from app.utils.nickname_gen import generate_nickname
 from app.utils.security import hash_password
-from app.services.jwt_service import decode_token  # Import your FastAPI app
+from app.services.jwt_service import decode_token, create_access_token  # Import your FastAPI app
 
 # Example of a test function using the async_client fixture
 @pytest.mark.asyncio
@@ -23,7 +24,7 @@ async def test_create_user_access_denied(async_client, user_token, email_service
     assert response.status_code == 403
 
 @pytest.mark.asyncio
-async def test_create_user_duplicate_email_admin(async_client, db_session,admin_token):
+async def test_create_user_duplicate_email_admin(async_client, db_session, admin_token):
     user_data_1 = {
             "nickname": "user1",
             "first_name": "User",
@@ -47,7 +48,7 @@ async def test_create_user_duplicate_email_admin(async_client, db_session,admin_
     assert response.status_code == 400
 
 @pytest.mark.asyncio
-async def test_create_user_duplicate_nickname_admin(async_client, db_session,admin_token):
+async def test_create_user_duplicate_nickname_admin(async_client, db_session, admin_token):
     user_data_1 = {
             "nickname": "user1",
             "first_name": "User",
@@ -313,3 +314,85 @@ async def test_list_users_unauthorized(async_client, user_token):
         headers={"Authorization": f"Bearer {user_token}"}
     )
     assert response.status_code == 403  # Forbidden, as expected for regular user
+
+@pytest.mark.asyncio
+async def test_update_user_profile_access_denied_with_fake_token(async_client):
+    headers = {"Authorization": f"Bearer fake_token"}
+    updated_user_data = {
+        "nickname": "NicknameTest123",
+        "email": "test@example.com",
+        "first_name": "TestUpdate",
+        "last_name": "TestUpdate",
+        "bio": "TestBio",
+        "profile_picture_url": "https://www.example.com/test.jpg",
+        "linkedin_profile_url": "https://www.linkedin.com/test",
+        "github_profile_url": "https://www.github.com/test"
+    }
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_update_user_profile(async_client, verified_user_and_token):
+    user, token = verified_user_and_token
+    headers = {"Authorization": f"Bearer {token}"}
+    updated_user_data = {
+        "first_name": "TestUpdate",
+        "last_name": "TestUpdate",
+        "bio": "TestBio",
+        "profile_picture_url": "https://www.example.com/test.jpg",
+        "linkedin_profile_url": "https://www.linkedin.com/test",
+        "github_profile_url": "https://www.github.com/test"
+    }
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
+    assert response.status_code == 200
+    assert response.json()["first_name"] == updated_user_data["first_name"]
+
+@pytest.mark.asyncio
+async def test_update_user_profile_duplicate_nickname(async_client, db_session, verified_user_and_token):
+    first_user, token = verified_user_and_token
+    user_data_2 = {
+            "nickname": "user2",
+            "first_name": "User",
+            "last_name": "Two",
+            "email": "user2@example.com",
+            "hashed_password": hash_password("AnotherPassword$5678"),
+            "role": UserRole.AUTHENTICATED,
+            "email_verified": True,
+            "is_locked": False,
+        }
+    second_user = User(**user_data_2)
+    db_session.add(second_user)
+    await db_session.commit()
+
+    headers = {"Authorization": f"Bearer {token}"}
+    updated_user_data = {
+        "nickname": "user2",
+    }
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Nickname already exists"
+
+@pytest.mark.asyncio
+async def test_update_user_profile_duplicate_email(async_client, db_session, verified_user_and_token):
+    first_user, token = verified_user_and_token
+    user_data_2 = {
+            "nickname": "user2",
+            "first_name": "User",
+            "last_name": "Two",
+            "email": "user2@example.com",
+            "hashed_password": hash_password("AnotherPassword$5678"),
+            "role": UserRole.AUTHENTICATED,
+            "email_verified": True,
+            "is_locked": False,
+        }
+    second_user = User(**user_data_2)
+    db_session.add(second_user)
+    await db_session.commit()
+
+    headers = {"Authorization": f"Bearer {token}"}
+    updated_user_data = {
+        "email": "user2@example.com",
+    }
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Email already exists"
