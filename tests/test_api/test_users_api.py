@@ -396,3 +396,17 @@ async def test_update_user_profile_duplicate_email(async_client, db_session, ver
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
     assert response.status_code == 400
     assert response.json()["detail"] == "Email already exists"
+
+@pytest.mark.asyncio
+async def test_update_user_professional_status_access_denied_with_fake_token(async_client):
+    fake_token = "fake_token"
+    update_data = {"is_professional": True}
+    response = await async_client.put("/users/{user_id}/set-professional/true", headers={"Authorization": f"Bearer {fake_token}"}, json=update_data)
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_update_user_professional_status_access_denied_with_user_token(async_client, user_token):
+    token = user_token
+    update_data = {"is_professional": True}
+    response = await async_client.put("/users/{user_id}/set-professional/true", headers={"Authorization": f"Bearer {token}"}, json=update_data)
+    assert response.status_code == 403
