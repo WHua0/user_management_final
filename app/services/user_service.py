@@ -201,13 +201,14 @@ class UserService:
         return False
 
     @classmethod
-    async def update_is_professional(cls, session: AsyncSession, user_id: UUID, is_professional: bool) -> Optional[User]:
+    async def update_is_professional(cls, session: AsyncSession, user_id: UUID, is_professional: bool, email_service: EmailService) -> Optional[User]:
         try:
             query = update(User).where(User.id == user_id).values(is_professional=is_professional).execution_options(synchronize_session="fetch")
             await cls._execute_query(session, query)
             updated_user = await cls.get_by_id(session, user_id)
             if updated_user:
                 session.refresh(updated_user)
+                await email_service.send_professional_status_email(updated_user)
                 logger.info(f"User {user_id} updated is_professional status successfully.")
                 return updated_user
             else:
