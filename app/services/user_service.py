@@ -208,8 +208,11 @@ class UserService:
             updated_user = await cls.get_by_id(session, user_id)
             if updated_user:
                 session.refresh(updated_user)
-                await email_service.send_professional_status_email(updated_user)
                 logger.info(f"User {user_id} updated is_professional status successfully.")
+                try:
+                    await email_service.send_professional_status_email(updated_user)
+                except Exception as e:
+                    logger.error(f"Error sending professional status email: {e}.")
                 return updated_user
             else:
                 logger.error(f"User {user_id} not found after updating is_professional status.")
