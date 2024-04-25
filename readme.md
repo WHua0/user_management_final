@@ -102,3 +102,17 @@ Various validators and constraints, such as minimum length, maximum length, requ
 ![Issue 7 Test](submissions/Github%20Issue%207%20Test.png)
 
 ## New Feature Implementation
+
+### User Profile Management: PUT / update-profile / Update Profile
+
+![UserProfileUpdate in user_schemas.py](submissions/Feature%20A%20Schema.png)
+
+![UserProfileUpdate Test](submissions/Feature%20A%20Schema%20Test.png)
+
+![Fixed get_current_user from token in dependencies.py](submissions/Feature%20A%20Fix.png)
+
+![PUT / update-profile / Update Profile in user_routes.py](submissions/Feature%20A%20Router.png)
+
+![PUT / update-profile / Update Profile Test](submissions/Feature%20A%20Router%20Test.png)
+
+### User Profile Management: TBD
