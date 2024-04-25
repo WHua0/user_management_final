@@ -91,10 +91,11 @@ class UserUpdate(UserBase):
     linkedin_profile_url: Optional[str] =Field(None, max_length=255, example="https://linkedin.com/in/johndoe")
     github_profile_url: Optional[str] = Field(None, max_length=255, example="https://github.com/johndoe")
     role: Optional[str] = Field(None, example="AUTHENTICATED")
+    is_professional: Optional[bool] = Field(None)
 
     @root_validator(pre=True)
     def check_at_least_one_value(cls, values):
-        if not any(values.values()):
+        if not any(values.values()) and 'is_professional' not in values:
             raise ValueError("At least one field must be provided for update")
         return values
 
