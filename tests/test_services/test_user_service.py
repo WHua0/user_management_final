@@ -198,25 +198,25 @@ async def test_verify_email_with_token(db_session, user):
     assert result is True
 
 # Test unlocking a user's account
-async def test_unlock_user_account(db_session, locked_user):
+async def test_unlock_user_account(db_session, locked_user, ):
     unlocked = await UserService.unlock_user_account(db_session, locked_user.id)
     assert unlocked, "The account should be unlocked"
     refreshed_user = await UserService.get_by_id(db_session, locked_user.id)
     assert not refreshed_user.is_locked, "The user should no longer be locked"
 
 # Test updating a user's is_professional status to True
-async def test_update_user_is_professional_true(db_session, user):
-    updated_user = await UserService.update_is_professional(db_session, user.id, True)
+async def test_update_user_is_professional_true(db_session, user, email_service):
+    updated_user = await UserService.update_is_professional(db_session, user.id, True, email_service)
     assert updated_user is not None
     assert updated_user.is_professional is True
 
 # Test updating a user's is_professional status to False
-async def test_update_user_is_professional_false(db_session, user):
-    updated_user = await UserService.update_is_professional(db_session, user.id, False)
+async def test_update_user_is_professional_false(db_session, user, email_service):
+    updated_user = await UserService.update_is_professional(db_session, user.id, False, email_service)
     assert updated_user is not None
     assert updated_user.is_professional is False
 
 # Test updating a user's is_professional status with an invalid user ID
-async def test_update_user_is_professional_invalid_user_id(db_session):
-    updated_user = await UserService.update_is_professional(db_session, "invalid_id", True)
+async def test_update_user_is_professional_invalid_user_id(db_session, email_service):
+    updated_user = await UserService.update_is_professional(db_session, "invalid_id", True, email_service)
     assert updated_user is None
