@@ -105,11 +105,26 @@ Various validators and constraints, such as minimum length, maximum length, requ
 
 ### User Profile Management: PUT / update-profile / Update Profile
 
+FastAPI endpoint that allows current (logged in) user to update his/her profile fields: email, nickname, first_name, last_name, bio, profile_picture url, linkedin_profile_url, and github_profile_url. However, if user updates to a different email, an updated login token is required. User will need to re-log in to obtain an update login token to use this feature.
+
+1. Added and Tested UserProfileUpdate(UserBase) in user_schemas.py. The schema is based on UserUpdate(UserBase), but without the option to update role.
+
 ![UserProfileUpdate in user_schemas.py](submissions/Feature%20A%20Schema.png)
 
 ![UserProfileUpdate Test](submissions/Feature%20A%20Schema%20Test.png)
 
+2. The login token is created from user email, not user ID. Method get_current_user in dependencies.py was updated, changing user_id to user_email. This does not affect the method's function, but clears up misunderstanding that get_current_user returns user email, not user id, from the parameter login token.
+
 ![Fixed get_current_user from token in dependencies.py](submissions/Feature%20A%20Fix.png)
+
+3. Added and Tested @router.put("/update-profile/" ...) in user_routes.py. This is based on @router.put("/users/{user_id}" ...).
+   1. Only users with the role of ADMIN, MANAGER, or AUTHENTICATED has access.
+   2. Current user email is retrieved from the login token.
+   3. If current user email is not found in the database, Http 404 is raised; this may occur if user changes his/her email, in which case a new login token is needed.
+   4. If nickname update is already used by another user, Http 400 is raised.
+   5. If email update is already used by another user, Http 400 is raised.
+   6. The updates are commited to the database.
+   7. UserResponse.model_construct is returned to the current user.
 
 ![PUT / update-profile / Update Profile in user_routes.py](submissions/Feature%20A%20Router.png)
 
