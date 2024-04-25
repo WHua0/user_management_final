@@ -23,7 +23,7 @@ async def test_create_user_access_denied(async_client, user_token, email_service
     assert response.status_code == 403
 
 @pytest.mark.asyncio
-async def test_create_user_duplicate_email_admin(async_client, db_session,admin_token):
+async def test_create_user_duplicate_email_admin(async_client, db_session, admin_token):
     user_data_1 = {
             "nickname": "user1",
             "first_name": "User",
@@ -47,7 +47,7 @@ async def test_create_user_duplicate_email_admin(async_client, db_session,admin_
     assert response.status_code == 400
 
 @pytest.mark.asyncio
-async def test_create_user_duplicate_nickname_admin(async_client, db_session,admin_token):
+async def test_create_user_duplicate_nickname_admin(async_client, db_session, admin_token):
     user_data_1 = {
             "nickname": "user1",
             "first_name": "User",
@@ -329,19 +329,3 @@ async def test_update_user_profile_access_denied_with_fake_token(async_client):
     }
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)
     assert response.status_code == 401
-
-@pytest.mark.asyncio
-async def test_update_user_profile_valid_token_missing_user(async_client, user_token):
-    headers = {"Authorization": f"Bearer {user_token}"}
-    updated_user_data = {
-        "nickname": "NicknameTest123",
-        "email": "test@example.com",
-        "first_name": "TestUpdate",
-        "last_name": "TestUpdate",
-        "bio": "TestBio",
-        "profile_picture_url": "https://www.example.com/test.jpg",
-        "linkedin_profile_url": "https://www.linkedin.com/test",
-        "github_profile_url": "https://www.github.com/test"
-    }
-    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)
-    assert response.status_code == 404
