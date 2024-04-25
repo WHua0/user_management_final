@@ -73,7 +73,10 @@ class UserService:
             new_user.verification_token = generate_verification_token()
             session.add(new_user)
             await session.commit()
-            await email_service.send_verification_email(new_user)
+            try:
+                await email_service.send_verification_email(new_user)
+            except Exception as e:
+                logger.error(f"Error sending verification email: {e}.")
             return new_user
         except ValidationError as e:
             logger.error(f"Validation error during user creation: {e}")
