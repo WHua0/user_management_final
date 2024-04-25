@@ -291,7 +291,7 @@ async def update_profile(user_update: UserUpdate, request: Request, db: AsyncSes
     """
 
     current_user_info = get_current_user(token)
-    user_email = current_user_info['user_id']
+    user_email = current_user_info['user_email']
     user = await UserService.get_by_email(db, user_email)
 
     if not user:
