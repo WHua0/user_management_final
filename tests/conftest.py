@@ -255,7 +255,7 @@ async def verified_user_and_token(db_session):
     db_session.add(user)
     await db_session.commit()
 
-    token_data = {"sub": str(user.id), "role": user.role.name}
+    token_data = {"sub": str(user.email), "role": user.role.name}
     token = create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
 
     return user, token
