@@ -327,7 +327,7 @@ async def test_update_user_access_denied_with_fake_token(async_client):
         "linkedin_profile_url": "https://www.linkedin.com/test",
         "github_profile_url": "https://www.github.com/test"
     }
-    response = await async_client.put("/update-profile", json=updated_user_data, headers=headers)
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)
     assert response.status_code == 401
 
 @pytest.mark.asyncio
@@ -343,5 +343,5 @@ async def test_update_valid_token_missing_user(async_client, user_token):
         "linkedin_profile_url": "https://www.linkedin.com/test",
         "github_profile_url": "https://www.github.com/test"
     }
-    response = await async_client.put("/update-profile", json=updated_user_data, headers=headers)
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)
     assert response.status_code == 404
