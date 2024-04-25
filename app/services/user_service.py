@@ -199,3 +199,20 @@ class UserService:
             await session.commit()
             return True
         return False
+
+    @classmethod
+    async def update_is_professional(cls, session: AsyncSession, user_id: UUID, is_professional: bool) -> Optional[User]:
+        try:
+            query = update(User).where(User.id == user_id).values(is_professional=is_professional).execution_options(synchronize_session="fetch")
+            await cls._execute_query(session, query)
+            updated_user = await cls.get_by_id(session, user_id)
+            if updated_user:
+                session.refresh(updated_user)
+                logger.info(f"User {user_id} updated is_professional status successfully.")
+                return updated_user
+            else:
+                logger.error(f"User {user_id} not found after updating is_professional status.")
+            return None
+        except Exception as e:
+            logger.error(f"Error during updating is_professional status: {e}")
+            return None
