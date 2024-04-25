@@ -345,6 +345,7 @@ async def test_update_user_profile(async_client, verified_user_and_token):
     }
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
     assert response.status_code == 200
+    assert response.json()["first_name"] == updated_user_data["first_name"]
 
 @pytest.mark.asyncio
 async def test_update_user_profile_duplicate_nickname(async_client, db_session, verified_user_and_token):
@@ -369,3 +370,4 @@ async def test_update_user_profile_duplicate_nickname(async_client, db_session, 
     }
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
     assert response.status_code == 400
+    assert response.json()["detail"] == "Nickname already exists"
