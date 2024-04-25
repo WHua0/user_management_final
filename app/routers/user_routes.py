@@ -326,7 +326,7 @@ async def update_profile(user_update: UserProfileUpdate, request: Request, db: A
     )
 
 @router.put("/users/{user_id}/set-professional/{is_professional}", response_model=UserResponse, name="set_professional", tags=["User Management Requires (Admin or Manager Roles)"])
-async def update_is_professional(user_id: UUID, is_professional: bool, request: Request, db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme), current_user: dict = Depends(require_role(["ADMIN", "MANAGER"]))):
+async def update_is_professional(user_id: UUID, is_professional: bool, request: Request, db: AsyncSession = Depends(get_db), email_service: EmailService = Depends(get_email_service), token: str = Depends(oauth2_scheme), current_user: dict = Depends(require_role(["ADMIN", "MANAGER"]))):
     """
     Update user is_professional by their ID.
 
@@ -337,7 +337,7 @@ async def update_is_professional(user_id: UUID, is_professional: bool, request: 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    updated_user = await UserService.update_is_professional(db, user_id, is_professional)
+    updated_user = await UserService.update_is_professional(db, user_id, is_professional, email_service)
 
     return UserResponse.model_construct(
         is_professional=updated_user.is_professional,
