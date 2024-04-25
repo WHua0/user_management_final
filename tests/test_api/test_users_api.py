@@ -2,6 +2,7 @@ from builtins import str
 import pytest
 from httpx import AsyncClient
 from datetime import timedelta
+from unittest.mock import AsyncMock, patch
 from app.main import app
 from app.models.user_model import User, UserRole
 from app.utils.nickname_gen import generate_nickname
@@ -396,3 +397,36 @@ async def test_update_user_profile_duplicate_email(async_client, db_session, ver
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
     assert response.status_code == 400
     assert response.json()["detail"] == "Email already exists"
+
+@pytest.mark.asyncio
+async def test_update_user_professional_status_access_denied_with_fake_token(async_client):
+    fake_token = "fake_token"
+    update_data = {"is_professional": True}
+    response = await async_client.put("/users/user_id/set-professional/true", headers={"Authorization": f"Bearer {fake_token}"}, json=update_data)
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_update_user_professional_status_access_denied_with_user_token(async_client, user_token):
+    token = user_token
+    update_data = {"is_professional": True}
+    response = await async_client.put("/users/user_id/set-professional/true", headers={"Authorization": f"Bearer {token}"}, json=update_data)
+    assert response.status_code == 403
+
+@pytest.mark.asyncio
+async def test_update_user_professional_status_as_admin(async_client, admin_token, verified_user):
+    update_data_true = {"is_professional": True}
+    update_data_false = {"is_professional": False}
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    professional_user = verified_user
+    
+    # Mock the email service
+    with patch('app.services.email_service.EmailService.send_professional_status_email') as mock_send_email:
+        mock_send_email.return_value = None  # Mock the email sending
+        
+        response = await async_client.put(f"/users/{professional_user.id}/set-professional/true", headers=headers, json=update_data_true)
+        assert response.status_code == 200
+        assert response.json()["is_professional"] == True
+
+        response = await async_client.put(f"/users/{professional_user.id}/set-professional/false", headers=headers, json=update_data_false)
+        assert response.status_code == 200
+        assert response.json()["is_professional"] == False
