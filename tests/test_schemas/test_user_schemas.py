@@ -208,3 +208,9 @@ def test_user_update_profile_valid(user_update_data):
     user_update = UserProfileUpdate(**user_update_data)
     assert user_update.email == user_update_data["email"]
     assert user_update.first_name == user_update_data["first_name"]
+
+def test_user_update_profile_invalid():
+    # Test case where all fields are None
+    with pytest.raises(ValueError) as exc_info:
+        UserProfileUpdate()
+    assert "At least one field must be provided for update" in str(exc_info.value)
