@@ -6,6 +6,7 @@ from app.models.user_model import User, UserRole
 from app.utils.nickname_gen import generate_nickname
 from app.utils.security import hash_password
 from app.services.jwt_service import decode_token  # Import your FastAPI app
+from app.services.user_service import UserService
 
 # Example of a test function using the async_client fixture
 @pytest.mark.asyncio
@@ -315,7 +316,7 @@ async def test_list_users_unauthorized(async_client, user_token):
     assert response.status_code == 403  # Forbidden, as expected for regular user
 
 @pytest.mark.asyncio
-async def test_update_user_access_denied_with_fake_token(async_client):
+async def test_update_user_profile_access_denied_with_fake_token(async_client):
     headers = {"Authorization": f"Bearer fake_token"}
     updated_user_data = {
         "nickname": "NicknameTest123",
@@ -331,7 +332,7 @@ async def test_update_user_access_denied_with_fake_token(async_client):
     assert response.status_code == 401
 
 @pytest.mark.asyncio
-async def test_update_valid_token_missing_user(async_client, user_token):
+async def test_update_user_profile_valid_token_missing_user(async_client, user_token):
     headers = {"Authorization": f"Bearer {user_token}"}
     updated_user_data = {
         "nickname": "NicknameTest123",
