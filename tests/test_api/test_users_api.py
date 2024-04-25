@@ -371,3 +371,28 @@ async def test_update_user_profile_duplicate_nickname(async_client, db_session, 
     response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
     assert response.status_code == 400
     assert response.json()["detail"] == "Nickname already exists"
+
+@pytest.mark.asyncio
+async def test_update_user_profile_duplicate_email(async_client, db_session, verified_user_and_token):
+    first_user, token = verified_user_and_token
+    user_data_2 = {
+            "nickname": "user2",
+            "first_name": "User",
+            "last_name": "Two",
+            "email": "user2@example.com",
+            "hashed_password": hash_password("AnotherPassword$5678"),
+            "role": UserRole.AUTHENTICATED,
+            "email_verified": True,
+            "is_locked": False,
+        }
+    second_user = User(**user_data_2)
+    db_session.add(second_user)
+    await db_session.commit()
+
+    headers = {"Authorization": f"Bearer {token}"}
+    updated_user_data = {
+        "email": "user2@example.com",
+    }
+    response = await async_client.put("/update-profile/", json=updated_user_data, headers=headers)  
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Email already exists"
