@@ -318,9 +318,30 @@ async def test_list_users_unauthorized(async_client, user_token):
 async def test_update_user_access_denied_with_fake_token(async_client):
     headers = {"Authorization": f"Bearer fake_token"}
     updated_user_data = {
-        "nickname": generate_nickname(),
+        "nickname": "NicknameTest123",
         "email": "test@example.com",
-        "password": "sS#fdasrongPassword123!",
+        "first_name": "TestUpdate",
+        "last_name": "TestUpdate",
+        "bio": "TestBio",
+        "profile_picture_url": "https://www.example.com/test.jpg",
+        "linkedin_profile_url": "https://www.linkedin.com/test",
+        "github_profile_url": "https://www.github.com/test"
     }
     response = await async_client.put("/update-profile", json=updated_user_data, headers=headers)
     assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_update_valid_token_missing_user(async_client, user_token):
+    headers = {"Authorization": f"Bearer {user_token}"}
+    updated_user_data = {
+        "nickname": "NicknameTest123",
+        "email": "test@example.com",
+        "first_name": "TestUpdate",
+        "last_name": "TestUpdate",
+        "bio": "TestBio",
+        "profile_picture_url": "https://www.example.com/test.jpg",
+        "linkedin_profile_url": "https://www.linkedin.com/test",
+        "github_profile_url": "https://www.github.com/test"
+    }
+    response = await async_client.put("/update-profile", json=updated_user_data, headers=headers)
+    assert response.status_code == 404
