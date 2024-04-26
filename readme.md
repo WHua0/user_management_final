@@ -134,4 +134,6 @@ FastAPI endpoint that allows current (logged in) user to update his/her profile 
 
 ![PUT / update-profile / Update Profile Test](submissions/Feature%20A%20Router%20Test.png)
 
-### User Profile Management: TBD
+### User Management Requires (Admin or Manager Roles): Set Professional Status
+
+![SetProfessionalStatus](submissions/Feature%20B.png)
