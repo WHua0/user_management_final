@@ -12,6 +12,8 @@
 
 ## Pytest Coverage
 
+![Pytest Coverage](submissions/Pytest%20COV.png)
+
 ## [QA (Quality Assurance) Issues](https://github.com/WHua0/user_management_final/issues?q=is%3Aissue+is%3Aclosed)
 
 ![Github Issues](submissions/Github%20Issues.png)
@@ -106,6 +108,8 @@ Various validators and constraints, such as minimum length, maximum length, requ
 ### User Profile Management: PUT / update-profile / Update Profile
 
 FastAPI endpoint that allows current (logged in) user to update his/her profile fields: email, nickname, first_name, last_name, bio, profile_picture url, linkedin_profile_url, and github_profile_url. However, if user updates to a different email, an updated login token is required. User will need to re-log in to obtain an update login token to use this feature.
+
+![UserProfileUpdate](submissions/Feature%20A.png)
 
 1. Added and Tested UserProfileUpdate(UserBase) in user_schemas.py. The schema is based on UserUpdate(UserBase), but without the option to update role.
 
