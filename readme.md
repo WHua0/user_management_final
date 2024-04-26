@@ -136,15 +136,26 @@ FastAPI endpoint that allows current (logged in) user to update his/her profile 
 
 ### Set Professional Status: PUT / users / {user_id} / set-professional / {is_professional} Set Professional
 
-FastAPI endpoint that allows admins and managers to set if_professional as true or false by user id. After which, the code will try to send a professional status notification to the user email. If the email fails to send, the code will provide a error log, but continue to update to the database.
+FastAPI endpoint that allows admins and managers to set if_professional as true or false by user id. After which, the code will try to send a professional status notification to the user email. If the email fails to send, the code will provide an error log, but continue to update to the database.
 
 ![SetProfessional](submissions/Feature%20B.png)
 
-1.
+1. Added a professional_status_update.md to email_templates directory, added send_professional_status_email to EmailService in email_service.py, and updated subject_map of send_user_email in email_service.py.
 
 ![SetProfessional EmailService](submissions/Feature%20B%20EmailService.png)
 
-2.
+2. Added and tested update_is_professional to UserService in user_service.py.
+   1. The code tries to:
+      1. Construct and Execute a SQL Update Query to set is_professional value for user id.
+      2. Retrieve the updated user by user id.
+      3. If updated user exists:
+         1. Refresh session with updated user's data.
+         2. Provide an info log.
+         3. Try to send an professional status email notification to updated user.
+         4. If fails to send an email, the code will provide an error log.
+         5. Return updated user.
+      4. Else, the code will provide an error log, and return None
+   2. If exception occurs, the code will provide an error log and return None.
 
 ![SetProfessional UserService](submissions/Feature%20B%20UserService.png)
 
