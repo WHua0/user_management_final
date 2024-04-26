@@ -331,7 +331,7 @@ async def update_is_professional(user_id: UUID, is_professional: bool, request: 
     Update user is_professional by their ID.
 
     - **user_id**: UUID of the user to update.
-    - **is_professional**: Boolean to set for user's is_professional status.
+    - **is_professional**: Boolean to set user's is_professional status.
     """
     user = await UserService.get_by_id(db, user_id)
     if not user:

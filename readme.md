@@ -12,6 +12,8 @@
 
 ## Pytest Coverage
 
+![Pytest Coverage](submissions/Pytest%20COV.png)
+
 ## [QA (Quality Assurance) Issues](https://github.com/WHua0/user_management_final/issues?q=is%3Aissue+is%3Aclosed)
 
 ![Github Issues](submissions/Github%20Issues.png)
@@ -107,6 +109,8 @@ Various validators and constraints, such as minimum length, maximum length, requ
 
 FastAPI endpoint that allows current (logged in) user to update his/her profile fields: email, nickname, first_name, last_name, bio, profile_picture url, linkedin_profile_url, and github_profile_url. However, if user updates to a different email, an updated login token is required. User will need to re-log in to obtain an update login token to use this feature.
 
+![UserProfileUpdate](submissions/Feature%20A.png)
+
 1. Added and Tested UserProfileUpdate(UserBase) in user_schemas.py. The schema is based on UserUpdate(UserBase), but without the option to update role.
 
 ![UserProfileUpdate in user_schemas.py](submissions/Feature%20A%20Schema.png)
@@ -130,4 +134,40 @@ FastAPI endpoint that allows current (logged in) user to update his/her profile 
 
 ![PUT / update-profile / Update Profile Test](submissions/Feature%20A%20Router%20Test.png)
 
-### User Profile Management: TBD
+### Set Professional Status: PUT / users / {user_id} / set-professional / {is_professional} Set Professional
+
+FastAPI endpoint that allows admins and managers to set if_professional as true or false by user id. After which, the code will try to send a professional status notification to the user email. If the email fails to send, the code will provide an error log, but continue to update to the database.
+
+![SetProfessional](submissions/Feature%20B.png)
+
+1. Added a professional_status_update.md to email_templates directory, added send_professional_status_email to EmailService in email_service.py, and updated subject_map of send_user_email in email_service.py. This is based on EmailService.send_verification_email.
+
+![SetProfessional EmailService](submissions/Feature%20B%20EmailService.png)
+
+2. Added and tested update_is_professional to UserService in user_service.py. This is based on UserService.update.
+   1. The code tries to:
+      1. Construct and Execute a SQL Update Query to set is_professional value for user id.
+      2. Retrieve the updated user by user id.
+      3. If updated user exists:
+         1. Commit updates to database, and refresh session with updated user's data.
+         2. Provide an info log.
+         3. Try to send an professional status email notification to updated user.
+         4. If fails to send an email, the code will provide an error log.
+         5. Return updated user.
+      4. Else, the code will provide an error log, and return None
+   2. If exception occurs, the code will provide an error log and return None.
+
+![SetProfessional UserService](submissions/Feature%20B%20UserService.png)
+
+![SetProfessional UserService Test](submissions/Feature%20B%20UserService%20Test.png)
+
+3. Added and tested @router.put("/users/{user_id}/set-professional/{is_professional}" ...) in user_routes.py.
+   1.  Only users with the role of ADMIN, or MANAGER has access.
+   2.  User is retrieved by user id.
+   3.  If user does not exist, raise Http 400.
+   4.  Update the user using UserService.update_is_professional (see above no. 2).
+   5.  UserResponse.model_construct is returned to the current user.
+
+![SetProfessional Router](submissions/Feature%20B%20Router.png)
+
+![SetProfessional Router Test](submissions/Feature%20B%20Router%20Test.png)
