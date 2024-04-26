@@ -134,6 +134,24 @@ FastAPI endpoint that allows current (logged in) user to update his/her profile 
 
 ![PUT / update-profile / Update Profile Test](submissions/Feature%20A%20Router%20Test.png)
 
-### User Management Requires (Admin or Manager Roles): Set Professional Status
+### Set Professional Status: PUT / users / {user_id} / set-professional / {is_professional} Set Professional
 
-![SetProfessionalStatus](submissions/Feature%20B.png)
+FastAPI endpoint that allows admins and managers to set if_professional as true or false by user id. After which, the code will try to send a professional status notification to the user email. If the email fails to send, the code will provide a error log, but continue to update to the database.
+
+![SetProfessional](submissions/Feature%20B.png)
+
+1.
+
+![SetProfessional EmailService](submissions/Feature%20B%20EmailService.png)
+
+2.
+
+![SetProfessional UserService](submissions/Feature%20B%20UserService.png)
+
+![SetProfessional UserService Test](submissions/Feature%20B%20UserService%20Test.png)
+
+3.
+
+![SetProfessional Router](submissions/Feature%20B%20Router.png)
+
+![SetProfessional Router Test](submissions/Feature%20B%20Router%20Test.png)
