@@ -219,7 +219,7 @@ class UserService:
                 return updated_user
             else:
                 logger.error(f"User {user_id} not found after updating is_professional status.")
-            return None
+                return None
         except Exception as e:
             logger.error(f"Error during updating is_professional status: {e}")
             return None
