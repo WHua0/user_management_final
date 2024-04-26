@@ -140,16 +140,16 @@ FastAPI endpoint that allows admins and managers to set if_professional as true 
 
 ![SetProfessional](submissions/Feature%20B.png)
 
-1. Added a professional_status_update.md to email_templates directory, added send_professional_status_email to EmailService in email_service.py, and updated subject_map of send_user_email in email_service.py.
+1. Added a professional_status_update.md to email_templates directory, added send_professional_status_email to EmailService in email_service.py, and updated subject_map of send_user_email in email_service.py. This is based on EmailService.send_verification_email.
 
 ![SetProfessional EmailService](submissions/Feature%20B%20EmailService.png)
 
-2. Added and tested update_is_professional to UserService in user_service.py.
+2. Added and tested update_is_professional to UserService in user_service.py. This is based on UserService.update.
    1. The code tries to:
       1. Construct and Execute a SQL Update Query to set is_professional value for user id.
       2. Retrieve the updated user by user id.
       3. If updated user exists:
-         1. Refresh session with updated user's data.
+         1. Commit updates to database, and refresh session with updated user's data.
          2. Provide an info log.
          3. Try to send an professional status email notification to updated user.
          4. If fails to send an email, the code will provide an error log.
@@ -161,7 +161,12 @@ FastAPI endpoint that allows admins and managers to set if_professional as true 
 
 ![SetProfessional UserService Test](submissions/Feature%20B%20UserService%20Test.png)
 
-3.
+3. Added and tested @router.put("/users/{user_id}/set-professional/{is_professional}" ...) in user_routes.py.
+   1.  Only users with the role of ADMIN, or MANAGER has access.
+   2.  User is retrieved by user id.
+   3.  If user does not exist, raise Http 400.
+   4.  Update the user using UserService.update_is_professional (see above no. 2).
+   5.  UserResponse.model_construct is returned to the current user.
 
 ![SetProfessional Router](submissions/Feature%20B%20Router.png)
 
