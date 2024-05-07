@@ -285,7 +285,7 @@ async def update_profile(user_update: UserProfileUpdate, request: Request, db: A
     - **token**: The OAuth2 access token obtained through OAuth2PasswordBearer dependency.
     - **current_user**: Obtained from token; must have the role of ADMIN, MANAGER, or AUTHENTICATED.
 
-    - **UserResponse:** The newly created user's information along with navigation links.
+    - **UserResponse:** The update user's information along with navigation links.
     """
     current_user_info = get_current_user(token)
     user_email = current_user_info['user_email']
